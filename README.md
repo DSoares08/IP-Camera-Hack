@@ -24,6 +24,8 @@ Initially, the stream works over the Internet via the **TP-Link Cloud**, meaning
     * To the **Camera** ($IP_{camera}$): Telling it the Client's IP is located at the Attacker's MAC ($\mathbf{MAC_{attacker}}$).
     * To the **Victim** ($IP_{client}$): Telling it the Camera's IP is located at the Attacker's MAC ($\mathbf{MAC_{attacker}}$).
 * **Tunnel Established:** All unencrypted video traffic now flows: **Camera $\rightarrow$ Attacker $\rightarrow$ Victim.** This gives us the ability to view and control the flow of packets to the victims's stream.
+* This shows the ARP Spoofing which is happening every 3 seconds : <img width="1141" height="39" alt="Screenshot 2025-12-05 at 12 23 29" src="https://github.com/user-attachments/assets/173ecbc1-41eb-4917-abb6-d5d13b7d21e4" />
+
 
 ---
 
