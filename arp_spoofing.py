@@ -2,6 +2,7 @@ from scapy.all import Ether, ARP, sendp
 import time
 import sys
 
+
 camera_ip = "192.168.0.81"
 camera_mac = "3C:64:CF:5D:C1:F6"
 
