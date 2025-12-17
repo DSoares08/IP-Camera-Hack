@@ -33,3 +33,26 @@ Initially, the stream works over the Internet via the **TP-Link Cloud**, meaning
 ## Execution and Corruption Logic
 
 The final step is the custom corruption script built with **Scapy**.
+
+## Other research
+We have also analyzed requests made by the Tapo App, this was done by using the software "Burp Suite Community Edition".
+You can enable "HTTP" proxy in BurpSuite. Within the wifi settings of your phone, you can then proxy every request your phone does towards your BurpSuite proxy on your laptop.
+Then we installed the BurpSuite proxy root certificate and after trusting it within our phone, burpsuite can make all the https requests needed and act as a "MITM", so we can analyze all the https requests the app does, unencrypted.
+
+It seems that your phone first sends out a login request to the camera, including a nonce called "cnonce". (192.168.0.81 is the camera's ip)
+<img width="1239" height="262" alt="image" src="https://github.com/user-attachments/assets/c8ab3156-f563-4f4f-ad2c-a45a1c2532d7" />
+Then the camera responds with another cnonce, a key and a device confirmation code.
+<img width="1237" height="192" alt="image" src="https://github.com/user-attachments/assets/2c495549-00d8-4600-8c5b-32935ed7dc83" />
+Then in the next request your camera does, it uses both the first nonce and second nonce, together with some other code as a prefix. We think this might be some hash that your app calculates based on the information given.
+<img width="1233" height="265" alt="image" src="https://github.com/user-attachments/assets/e1135b8e-e93e-4d09-abd8-c68fc38bd145" />
+If your camera accepts this request, it responds back with some "stok". This stok seems to be used all over as the only authentication in future requests.
+<img width="982" height="151" alt="image" src="https://github.com/user-attachments/assets/203bf3e4-1a33-4705-ae02-67513549ae1f" />
+
+See here an example of moving a camera up. It seems like the stok used is the one we received and the request stays the same for the movement. (blue is request, red is response)
+<img width="1241" height="500" alt="image" src="https://github.com/user-attachments/assets/f98ec405-7046-47df-99e9-7f636d74c0ef" />
+
+
+
+
+
+

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Script Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"
+    />
+
+    <link rel="stylesheet" href="static/main.css" />
+  </head>
+  <body>
+    <h1>Script Control Center</h1>
+
+    <form method="post">
+      <div>
+        <span
+          class="status-dot {{ 'active' if 'corrupt' in running else 'idle' }}"
+        ></span>
+        <strong>Corrupt:</strong>
+        <button name="start_corrupt" type="submit">Start</button>
+        <button name="stop_corrupt" class="stop" type="submit">Stop</button>
+      </div>
+
+      <div>
+        <span
+          class="status-dot {{ 'active' if 'video' in running else 'idle' }}"
+        ></span>
+        <strong>Video Injector:</strong>
+        <button name="start_video" type="submit">Start</button>
+        <button name="stop_video" class="stop" type="submit">Stop</button>
+      </div>
+
+      <div>
+        <span
+          class="status-dot {{ 'active' if 'arp' in running else 'idle' }}"
+        ></span>
+        <strong>ARP Spoofing:</strong>
+        <button name="start_arp" type="submit">Start</button>
+        <button name="stop_arp" class="stop" type="submit">Stop</button>
+      </div>
+
+      <div>
+        <span
+          class="status-dot {{ 'active' if 'audio' in running else 'idle' }}"
+        ></span>
+        <strong>Audio Injector:</strong>
+        <button name="start_audio" type="submit">Start</button>
+        <button name="stop_audio" class="stop" type="submit">Stop</button>
+      </div>
+    </form>
+
+    <hr />
+    <h3>Status Log:</h3>
+    <pre style="background: #f4f4f4; padding: 10px">
+{{ output if output else "System ready." }}</pre
+    >
+  </body>
+</html>
