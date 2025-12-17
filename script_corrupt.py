@@ -27,7 +27,7 @@ def corrupt_rtp_packet(packet):
         if nal_type in [5, 7, 8]:
             
            
-            corrupt_block = b'\xAA\xBB\xCC\xDD\xEE\xFF\x00\x11' # 8 bytes of random stuff to corrup
+            corrupt_block = b'\xAA\xBB\xCC\xDD\xEE\xFF\x00\x11' # 8 bytes of random stuff to corrupt
             
             # Corrupt the payload it self by including our corrupt block
             if len(original_payload) > 13:
@@ -37,7 +37,7 @@ def corrupt_rtp_packet(packet):
                 new_packet = packet.copy()
                 new_packet[Raw].load = corrupted_data 
                 
-                # delete the checksums to that they are recalculated given the new payload
+                # delete the checksums so that they are recalculated given the new payload
                 del new_packet[IP].chksum
                 del new_packet[UDP].chksum
                 
