@@ -40,7 +40,8 @@ You can enable "HTTP" proxy in BurpSuite. Within the wifi settings of your phone
 Then we installed the BurpSuite proxy root certificate and after trusting it within our phone, burpsuite can make all the https requests needed and act as a "MITM", so we can analyze all the https requests the app does, unencrypted.
 
 It seems that your phone first sends out a login request to the camera, including a nonce called "cnonce". (192.168.0.81 is the camera's ip)
-<img width="1239" height="262" alt="image" src="https://github.com/user-attachments/assets/c8ab3156-f563-4f4f-ad2c-a45a1c2532d7" />
+<img width="930" height="245" alt="image" src="https://github.com/user-attachments/assets/3c16da96-1bc6-4ec5-a4e5-6719c8c52990" />
+
 Then the camera responds with another cnonce, a key and a device confirmation code.
 <img width="1237" height="192" alt="image" src="https://github.com/user-attachments/assets/2c495549-00d8-4600-8c5b-32935ed7dc83" />
 Then in the next request your camera does, it uses both the first nonce and second nonce, together with some other code as a prefix. We think this might be some hash that your app calculates based on the information given.
