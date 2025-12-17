@@ -48,8 +48,9 @@ Then in the next request your camera does, it uses both the first nonce and seco
 If your camera accepts this request, it responds back with some "stok". This stok seems to be used all over as the only authentication in future requests.
 <img width="982" height="151" alt="image" src="https://github.com/user-attachments/assets/203bf3e4-1a33-4705-ae02-67513549ae1f" />
 
-See here an example of moving a camera up. It seems like the stok used is the one we received and the request stays the same for the movement. (blue is request, red is response)
-<img width="1241" height="500" alt="image" src="https://github.com/user-attachments/assets/f98ec405-7046-47df-99e9-7f636d74c0ef" />
+See here a later request being made from the app to the camera. With just the app open and no other action.
+<img width="1241" height="489" alt="image" src="https://github.com/user-attachments/assets/a56ab70d-aa2d-483c-a1d5-db668f62a9dd" />
+
 
 
 
