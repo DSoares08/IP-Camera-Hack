@@ -34,7 +34,7 @@ Initially, the stream works over the Internet via the **TP-Link Cloud**, meaning
 
 The final step is the custom corruption script built with **Scapy**.
 
-## Other research
+## Other research we didnt directly use for this attack
 We have also analyzed requests made by the Tapo App, this was done by using the software "Burp Suite Community Edition".
 You can enable "HTTP" proxy in BurpSuite. Within the wifi settings of your phone, you can then proxy every request your phone does towards your BurpSuite proxy on your laptop.
 Then we installed the BurpSuite proxy root certificate and after trusting it within our phone, burpsuite can make all the https requests needed and act as a "MITM", so we can analyze all the https requests the app does, unencrypted.
