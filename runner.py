@@ -23,14 +23,14 @@ def main():
 
     try: 
         if args.freeze:
-            subprocess.run([sys.executable, "corrupt.py"], check=True)
+            subprocess.run([sys.executable, "script_corrupt.py"], check=True)
 
         elif args.video:
-            subprocess.run([sys.executable, "injector.py"], check=True)
+            subprocess.run([sys.executable, "script_video.py"], check=True)
 
         elif args.video_audio:
-            injector = subprocess.Popen([sys.executable, "injector.py"])
-            audio_injector = subprocess.Popen([sys.executable, "audio_injector.py"])
+            injector = subprocess.Popen([sys.executable, "script_corrupt.py"])
+            audio_injector = subprocess.Popen([sys.executable, "script_audio.py"])
 
             injector.wait()
             audio_injector.wait()

