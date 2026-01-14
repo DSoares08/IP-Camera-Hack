@@ -1,11 +1,8 @@
 from scapy.all import sniff, UDP, IP, RTP
 import struct
 import subprocess
-import sys
-import os
 import threading
 import time
-from collections import defaultdict
 
 IFACE = "en0"
 IP_CAMERA = "192.168.0.81"
@@ -29,13 +26,13 @@ write_buffer = bytearray()
 last_flush = time.time()
 
 def get_nal_type(nal_unit):
-    """Extract NAL unit type from first byte"""
+    # Extract NAL unit type from first byte
     if len(nal_unit) < 1:
         return None
     return nal_unit[0] & 0x1F
 
 def write_nal_unit(nal_unit):
-    """Write a NAL unit to ffplay pipe"""
+    # Write a NAL unit to ffplay pipe
     global sps_pps_written, sps_data, pps_data, ffplay_process
 
     if not ffplay_process or not ffplay_process.stdin:
@@ -69,6 +66,7 @@ def process_packet(pkt):
 
     try:
         payload = bytes(pkt[UDP].payload)
+
         if len(payload) < 12:
             return
 
@@ -80,6 +78,7 @@ def process_packet(pkt):
 
         video_packet_count += 1
         rtp_payload = payload[12:]
+
         if len(rtp_payload) < 1:
             return
 
@@ -131,7 +130,7 @@ def process_packet(pkt):
             print(f"[!] Error: {e}")
 
 def start_player():
-    """Start ffplay with pipe input for real-time streaming"""
+    # Start ffplay with pipe input for real-time streaming
     global ffplay_process
 
     print("[*] Waiting for SPS/PPS headers...")
@@ -192,6 +191,7 @@ if __name__ == "__main__":
         print(f"    Total packets: {packet_count}")
         print(f"    Video packets: {video_packet_count}")
         print(f"    SPS/PPS written: {sps_pps_written}")
+
         if ffplay_process:
             try:
                 ffplay_process.stdin.close()

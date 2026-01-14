@@ -12,7 +12,7 @@ def index():
     output = ""
     
     if request.method == 'POST':
-        # all possible script types
+        # All possible script types
         script_keys = ['corrupt', 'video', 'arp', 'audio']
         
         for key in script_keys:

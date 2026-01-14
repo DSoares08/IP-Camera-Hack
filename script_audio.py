@@ -13,11 +13,13 @@ SSRC_INJECTED = 0x12345678
 INIT_SEQ_NUM = 0
 PAYLOAD_TYPE = 8           
 
-SAMPLE_RATE = 8000           # standard G.711 sample rate
-PACKET_DURATION_MS = 20      # typical packet duration
-SAMPLES_PER_PACKET = int(SAMPLE_RATE * PACKET_DURATION_MS / 1000) # 160 bytes for 20ms
+# Standard G.711 sample rate
+SAMPLE_RATE = 8000           
+# Typical packet duration
+PACKET_DURATION_MS = 20      
+SAMPLES_PER_PACKET = int(SAMPLE_RATE * PACKET_DURATION_MS / 1000) 
 TIMESTAMP_INC = SAMPLES_PER_PACKET
-PACKET_INTERVAL = PACKET_DURATION_MS / 1000.0  # Exact packet interval 
+PACKET_INTERVAL = PACKET_DURATION_MS / 1000.0  
 
 
 def get_stream_params():
@@ -38,7 +40,7 @@ def get_stream_params():
         pkt = packets[0]
         pt = -1
 
-        # extract the payload type to check if it's audio
+        # Extract the payload type to check if it's audio
         if RTP in pkt:
             pt = pkt[RTP].payload_type
         else:
@@ -99,6 +101,7 @@ def inject_audio(audio_file):
         start_time = time.time()
 
         for i, chunk in enumerate(chunks):
+            # Ensures the last packet still has 160 byte payload size
             if len(chunk) < SAMPLES_PER_PACKET:
                 chunk += b'\x00' * (SAMPLES_PER_PACKET - len(chunk))
 
@@ -118,6 +121,7 @@ def inject_audio(audio_file):
 
             send(packet, iface=IFACE, verbose=False)
 
+            # The % makes sure these fields don't grow forever (they are 16 and 32 bit respectively in RTP)
             sequence_num = (sequence_num + 1) % 65536
             timestamp = (timestamp + TIMESTAMP_INC) % 4294967296
 
