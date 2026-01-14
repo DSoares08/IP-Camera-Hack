@@ -29,7 +29,7 @@ def main():
             subprocess.run([sys.executable, "script_video.py"], check=True)
 
         elif args.video_audio:
-            injector = subprocess.Popen([sys.executable, "script_video.py"])
+            injector = subprocess.Popen([sys.executable, "script_corrupt.py"])
             audio_injector = subprocess.Popen([sys.executable, "script_audio.py"])
 
             injector.wait()

@@ -1,59 +1,91 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Script Dashboard</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"
-    />
-
-    <link rel="stylesheet" href="static/main.css" />
+    <title>MITM Control Center</title>
+    <style>
+      body {
+        font-family: "Courier New", Courier, monospace;
+        background: #000;
+        color: #0f0;
+        padding: 50px;
+      }
+      .card {
+        border: 1px solid #0f0;
+        padding: 20px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      button {
+        background: #000;
+        color: #0f0;
+        border: 1px solid #0f0;
+        padding: 10px 20px;
+        cursor: pointer;
+      }
+      button.active {
+        background: #f00;
+        color: #fff;
+        border-color: #f00;
+      }
+      .status-dot {
+        height: 10px;
+        width: 10px;
+        background-color: #555;
+        border-radius: 50%;
+        display: inline-block;
+      }
+      .status-dot.on {
+        background-color: #0f0;
+        box-shadow: 0 0 10px #0f0;
+      }
+    </style>
   </head>
   <body>
-    <h1>Script Control Center</h1>
-
-    <form method="post">
-      <div>
-        <span
-          class="status-dot {{ 'active' if 'corrupt' in running else 'idle' }}"
-        ></span>
-        <strong>Corrupt:</strong>
-        <button name="start_corrupt" type="submit">Start</button>
-        <button name="stop_corrupt" class="stop" type="submit">Stop</button>
+    <h1>SYSTEM OVERRIDE: IP CAMERA DASHBOARD</h1>
+    <div id="controls">
+      <div class="card">
+        <span>[1] ARP SPOOFER (NETWORK TUNNEL)</span>
+        <button id="arp" onclick="toggle('arp')">START</button>
       </div>
-
-      <div>
-        <span
-          class="status-dot {{ 'active' if 'video' in running else 'idle' }}"
-        ></span>
-        <strong>Video Injector:</strong>
-        <button name="start_video" type="submit">Start</button>
-        <button name="stop_video" class="stop" type="submit">Stop</button>
+      <div class="card">
+        <span>[2] VIDEO INJECTOR (HIJACK)</span>
+        <button id="video" onclick="toggle('video')">START</button>
       </div>
-
-      <div>
-        <span
-          class="status-dot {{ 'active' if 'arp' in running else 'idle' }}"
-        ></span>
-        <strong>ARP Spoofing:</strong>
-        <button name="start_arp" type="submit">Start</button>
-        <button name="stop_arp" class="stop" type="submit">Stop</button>
+      <div class="card">
+        <span>[3] AUDIO INJECTOR (VOICE)</span>
+        <button id="audio" onclick="toggle('audio')">START</button>
       </div>
-
-      <div>
-        <span
-          class="status-dot {{ 'active' if 'audio' in running else 'idle' }}"
-        ></span>
-        <strong>Audio Injector:</strong>
-        <button name="start_audio" type="submit">Start</button>
-        <button name="stop_audio" class="stop" type="submit">Stop</button>
+      <div class="card">
+        <span>[4] PACKET CORRUPTOR (FUZZER)</span>
+        <button id="corrupt" onclick="toggle('corrupt')">START</button>
       </div>
-    </form>
+      <div class="card">
+        <span>[5] VIDEO + AUDIO INJECTOR (HIJACK)</span>
+        <button id="video_audio" onclick="toggle('video_audio')">START</button>
+      </div>
+      <div class="card">
+        <span>[6] VIDEO VIEWER (FFPLAY)</span>
+        <button id="viewer" onclick="toggle('viewer')">START</button>
+      </div>
+    </div>
 
-    <hr />
-    <h3>Status Log:</h3>
-    <pre style="background: #f4f4f4; padding: 10px">
-{{ output if output else "System ready." }}</pre
-    >
+    <script>
+      function toggle(type) {
+        fetch("/toggle/" + type)
+          .then((res) => res.json())
+          .then((data) => {
+            const btn = document.getElementById(type);
+            if (data.status === "running") {
+              btn.innerText = "STOP";
+              btn.classList.add("active");
+            } else {
+              btn.innerText = "START";
+              btn.classList.remove("active");
+            }
+          });
+      }
+    </script>
   </body>
 </html>
