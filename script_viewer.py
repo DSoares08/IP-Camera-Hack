@@ -6,7 +6,7 @@ import time
 
 IFACE = "en0"
 IP_CAMERA = "192.168.0.81"
-IP_CLIENT = "192.168.0.162"
+IP_VICTIM = "192.168.0.162"
 
 h264_buffer = bytearray()
 packet_count = 0
@@ -59,7 +59,7 @@ def process_packet(pkt):
 
     if UDP not in pkt or IP not in pkt:
         return
-    if pkt[IP].src != IP_CAMERA or pkt[IP].dst != IP_CLIENT:
+    if pkt[IP].src != IP_CAMERA or pkt[IP].dst != IP_VICTIM:
         return
 
     packet_count += 1
@@ -179,7 +179,7 @@ if __name__ == "__main__":
     try:
         sniff(
             iface=IFACE,
-            filter=f"udp and src {IP_CAMERA} and dst {IP_CLIENT}",
+            filter=f"udp and src {IP_CAMERA} and dst {IP_VICTIM}",
             prn=process_packet,
             store=False,  
             timeout=None  

